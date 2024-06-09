@@ -1,10 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React from 'react';
 import type {PropsWithChildren} from 'react';
 import {
@@ -15,104 +8,98 @@ import {
   Text,
   useColorScheme,
   View,
+  Button,
+  Alert,
+  TextInput,
 } from 'react-native';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+import Edit from './svg/Edit.js'
+import Task from './components/Task'
 
 function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+  const [tasks,setTasks] = React.useState([
+    {
+      task : 'Like',
+      status : 0
+    },
+    {
+      task : 'Comment',
+      status : 0,
+    },
+    {
+      task : 'Subscribe',
+      status : 0
+    },
+  ])
 
+  const [newTask,setNewTask] = React.useState("")
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
+    <SafeAreaView style = {styles.app}>
+      <View style={styles.content} >
+        <Text style = {styles.heading}>Today's Tasks</Text>
+        <View style={styles.hr} /> 
+        {
+          tasks.map( (task,index) => (<Task task={task.task} index={index} key={index} setTasks={setTasks}/>))
+        }
+      </View>
+      
+      <SafeAreaView style = {styles.buttons}>
+        <TextInput 
+          style = {styles.plus} 
+          onChangeText = {(newTask) => setNewTask(prev => newTask)}
+          placeholder="NEW TASK"
+        />
+        <Button 
+          style = {styles.AddTask} 
+          title="+" 
+          onPress = {() => {setTasks( prev => [...prev , {task : newTask , status : 0}]  )} }
+        />
+      </SafeAreaView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+
+  buttons : {   
+    flexDirection: 'row',
+    justifyContent : 'space-between',
+    alignItems : 'center'
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+  app : {
+    flex : 1,
+    padding : 15,
+    backgroundColor : '#000'
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
+  content : {
+    flex : 1,
   },
-  highlight: {
-    fontWeight: '700',
+  AddTask : {
+    flex : 1,
   },
+  plus : {
+    backgroundColor : '#fff'
+  },
+  heading : {
+    fontSize : 24,
+    fontWeight : '900',
+    color : '#fff'
+  },
+  hr : {
+    borderBottomColor: '#999', 
+    borderBottomWidth: 1,      
+    marginVertical: 10,      
+  },
+  tasks : { 
+    flexDirection : 'row',
+    justifyContent : 'space-between',
+    padding : 10,
+    borderColor : '#555',
+    borderRadius :10,
+    borderWidth : 1,
+    margin : 5,
+  }
+  
 });
 
 export default App;
